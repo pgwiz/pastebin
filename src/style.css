@@ -1,0 +1,172 @@
+body {
+    background-color: #f8f9fa;
+}
+
+pre code {
+    background-color: #f0f0f0;
+    padding: 1em;
+    border-radius: 5px;
+    display: block;
+    overflow-x: auto;
+}
+
+       body.dark-mode {
+            --form-bg: rgba(33, 37, 41, 0.85);
+            --text-color: #f8f9fa;
+            --input-border: #495057;
+            --input-bg: #495057;
+        }
+
+        body {
+            --form-bg: rgba(255, 255, 255, 0.85);
+            --text-color: #212529;
+            --input-border: #ced4da;
+            --input-bg: #fff;
+        }
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #background-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .form-container {
+            background-color: var(--form-bg);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .form input, .form select, .form textarea {
+            color: var(--text-color);
+            background-color: var(--input-bg);
+            border-color: var(--input-border);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .flex-column {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 1rem;
+        }
+
+        .inputForm {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--input-border);
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            background-color: var(--input-bg);
+        }
+
+        .inputForm svg {
+            margin-right: 0.5rem;
+            fill: var(--text-color);
+        }
+
+        .input {
+            border: none;
+            outline: none;
+            width: 100%;
+            background-color: transparent;
+            color: var(--text-color);
+        }
+
+        .flex-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .flex-row .span {
+            color: #0d6efd;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .button-submit {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.5rem;
+            background-color: #0d6efd;
+            color: #fff;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .button-submit:hover {
+            background-color: #0b5ed7;
+        }
+
+        .p {
+            text-align: center;
+            margin: 0.5rem 0;
+        }
+
+        .p .span {
+            color: #0d6efd;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .line {
+            position: relative;
+            text-align: center;
+        }
+
+        .line::before,
+        .line::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background-color: var(--input-border);
+        }
+
+        .line::before {
+            left: 0;
+        }
+
+        .line::after {
+            right: 0;
+        }
+
+        .btn.google,
+        .btn.apple {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--input-border);
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-weight: 500;
+            margin-right: 0.5rem;
+        }
+
+        .btn.apple {
+            margin-right: 0;
+        }
+
+        .btn.google svg,
+        .btn.apple svg {
+            margin-right: 0.5rem;
+        }

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Name - Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo">
+                <a href="#hero">Your Name</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="burger-menu">
+                <div class="line1"></div>
+                <div class="line2"></div>
+                <div class="line3"></div>
+            </div>
+        </nav>
+    </header>
+
+    <section id="hero" class="hero-section">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Hi, I'm <span class="highlight">Your Name</span></h1>
+                <p class="tagline">A passionate [Your Profession] specializing in [Your Niche].</p>
+                <div class="hero-buttons">
+                    <a href="#portfolio" class="btn primary-btn">View My Work</a>
+                    <a href="#contact" class="btn secondary-btn">Get in Touch</a>
+                </div>
+                <div class="social-icons">
+                    <a href="https://linkedin.com/in/yourprofile" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://github.com/yourprofile" target="_blank"><i class="fab fa-github"></i></a>
+                    <a href="https://twitter.com/yourprofile" target="_blank"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="images/your-profile-picture.jpg" alt="Your Profile Picture">
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about-section">
+        <div class="container">
+            <h2>About Me</h2>
+            <div class="about-content">
+                <div class="about-image">
+                    <img src="images/about-me.jpg" alt="About Me Image">
+                </div>
+                <div class="about-text">
+                    <p>Welcome to my corner of the web! I'm [Your Name], a [Your Profession] with X years of experience in [Key Area 1] and [Key Area 2]. I love building innovative solutions and bringing ideas to life through code and design.</p>
+                    <p>My journey in [Your Field] started when I was [Age/Year], and since then, I've been dedicated to mastering new technologies and solving complex problems. I thrive in collaborative environments and am always eager to learn and grow.</p>
+                    <p>Outside of work, you can find me [Hobby 1], [Hobby 2], or exploring new places. I believe a balanced life fuels creativity and productivity.</p>
+                    <a href="your-resume.pdf" target="_blank" class="btn primary-btn download-resume">Download Resume</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills" class="skills-section">
+        <div class="container">
+            <h2>My Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3>Frontend Development</h3>
+                    <ul>
+                        <li><i class="fab fa-html5"></i> HTML5</li>
+                        <li><i class="fab fa-css3-alt"></i> CSS3</li>
+                        <li><i class="fab fa-js"></i> JavaScript (ES6+)</li>
+                        <li><i class="fab fa-react"></i> React.js</li>
+                        <li><i class="fab fa-angular"></i> Angular</li>
+                        <li><i class="fab fa-vuejs"></i> Vue.js</li>
+                        <li><i class="fab fa-bootstrap"></i> Bootstrap</li>
+                        <li>Sass/Less</li>
+                        <li>Responsive Design</li>
+                    </ul>
+                </div>
+                <div class="skill-category">
+                    <h3>Backend Development</h3>
+                    <ul>
+                        <li><i class="fab fa-node-js"></i> Node.js</li>
+                        <li>Express.js</li>
+                        <li><i class="fab fa-python"></i> Python</li>
+                        <li>Django/Flask</li>
+                        <li><i class="fab fa-php"></i> PHP</li>
+                        <li>Laravel</li>
+                        <li><i class="fas fa-database"></i> SQL (PostgreSQL, MySQL)</li>
+                        <li>MongoDB</li>
+                        <li>RESTful APIs</li>
+                    </ul>
+                </div>
+                <div class="skill-category">
+                    <h3>Tools & Technologies</h3>
+                    <ul>
+                        <li><i class="fab fa-git-alt"></i> Git & GitHub</li>
+                        <li><i class="fab fa-aws"></i> AWS</li>
+                        <li><i class="fab fa-docker"></i> Docker</li>
+                        <li>Webpack/Parcel</li>
+                        <li>VS Code</li>
+                        <li>Jira, Trello</li>
+                        <li>Figma, Adobe XD</li>
+                        <li>Agile Methodologies</li>
+                    </ul>
+                </div>
+                <div class="skill-category">
+                    <h3>Soft Skills</h3>
+                    <ul>
+                        <li>Problem Solving</li>
+                        <li>Communication</li>
+                        <li>Teamwork</li>
+                        <li>Adaptability</li>
+                        <li>Time Management</li>
+                        <li>Creativity</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolio" class="portfolio-section">
+        <div class="container">
+            <h2>My Portfolio</h2>
+            <div class="portfolio-grid">
+                <div class="portfolio-item">
+                    <img src="images/project1.jpg" alt="Project 1">
+                    <div class="item-overlay">
+                        <h3>Project Title One</h3>
+                        <p>A brief description of Project One, highlighting technologies used.</p>
+                        <div class="item-links">
+                            <a href="https://yourproject1demo.com" target="_blank" class="btn small-btn">Live Demo</a>
+                            <a href="https://github.com/yourprofile/project1" target="_blank" class="btn small-btn">GitHub Repo</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <img src="images/project2.jpg" alt="Project 2">
+                    <div class="item-overlay">
+                        <h3>Project Title Two</h3>
+                        <p>A brief description of Project Two, highlighting technologies used.</p>
+                        <div class="item-links">
+                            <a href="https://yourproject2demo.com" target="_blank" class="btn small-btn">Live Demo</a>
+                            <a href="https://github.com/yourprofile/project2" target="_blank" class="btn small-btn">GitHub Repo</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <img src="images/project3.jpg" alt="Project 3">
+                    <div class="item-overlay">
+                        <h3>Project Title Three</h3>
+                        <p>A brief description of Project Three, highlighting technologies used.</p>
+                        <div class="item-links">
+                            <a href="https://yourproject3demo.com" target="_blank" class="btn small-btn">Live Demo</a>
+                            <a href="https://github.com/yourprofile/project3" target="_blank" class="btn small-btn">GitHub Repo</a>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            <div class="view-more">
+                <a href="your-full-portfolio-page.html" class="btn primary-btn">View All Projects</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience" class="experience-section">
+        <div class="container">
+            <h2>Work Experience & Education</h2>
+            <div class="timeline">
+                <div class="timeline-item left">
+                    <div class="timeline-content">
+                        <h3>Software Engineer</h3>
+                        <h4>Tech Solutions Inc.</h4>
+                        <span class="dates">Jan 2022 - Present</span>
+                        <ul>
+                            <li>Developed and maintained web applications using React and Node.js.</li>
+                            <li>Collaborated with cross-functional teams to deliver high-quality software.</li>
+                            <li>Implemented RESTful APIs for various services.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="timeline-item right">
+                    <div class="timeline-content">
+                        <h3>Junior Developer</h3>
+                        <h4>Web Innovators Ltd.</h4>
+                        <span class="dates">Jul 2020 - Dec 2021</span>
+                        <ul>
+                            <li>Assisted in front-end development using HTML, CSS, and JavaScript.</li>
+                            <li>Contributed to database design and management.</li>
+                            <li>Participated in code reviews and agile sprints.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="timeline-item left">
+                    <div class="timeline-content">
+                        <h3>B.Sc. Computer Science</h3>
+                        <h4>University of Technology</h4>
+                        <span class="dates">Sept 2016 - Jun 2020</span>
+                        <p>Graduated with First Class Honors.</p>
+                    </div>
+                </div>
+                </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2>Get In Touch</h2>
+            <p class="contact-intro">I'm always open to new opportunities, collaborations, and interesting projects. Feel free to reach out!</p>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <p><i class="fas fa-envelope"></i> <a href="mailto:youremail@example.com">youremail@example.com</a></p>
+                    <p><i class="fas fa-phone"></i> +123 456 7890</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Your City, Your Country</p>
+                    <div class="social-links-contact">
+                        <a href="https://linkedin.com/in/yourprofile" target="_blank"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/yourprofile" target="_blank"><i class="fab fa-github"></i></a>
+                        <a href="https://twitter.com/yourprofile" target="_blank"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="contact-form-container">
+                    <form class="contact-form" action="your_form_submission_endpoint.php" method="POST">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" name="subject">
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" rows="6" required></textarea>
+                        </div>
+                        <button type="submit" class="btn primary-btn send-message-btn">Send Message</button>
+                    </form>
+                    <div id="form-messages" class="form-messages"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; <span id="current-year"></span> Your Name. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
