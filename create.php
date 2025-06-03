@@ -55,10 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             <?php endif; ?>
             <div class="mb-3">
-                <label class="form-label">Username</label>
-                <input type="text" name="username" class="form-control" required>
-            </div>
-            <div class="mb-3">
                 <label class="form-label">Title</label>
                 <input type="text" name="title" class="form-control" required>
             </div>
