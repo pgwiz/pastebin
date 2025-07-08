@@ -5,3 +5,6 @@ ptg.ps1
 ptg2.ps1
 port/
 old/
+migrate_users.php
+.gitignore
+README.md
