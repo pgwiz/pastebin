@@ -9,3 +9,4 @@ migrate_users.php
 migrate_permissions.php
 .gitignore
 README.md
+cardtest/
