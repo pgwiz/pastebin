@@ -1,65 +1,163 @@
 <?php
 include 'db.php';
 include 'auth.php';
-
 $user = get_logged_in_user();
-if (!$user) {
-    header("Location: login.php");
-    exit;
-}
-
-// Fetch recent pastes (last 10)
-$stmt = $pdo->prepare("
-    SELECT p.*, u.username AS author 
-    FROM pastes p 
-    LEFT JOIN users u ON p.user_id = u.id 
-    WHERE p.user_id = ? 
-    ORDER BY p.created_at DESC 
-    LIMIT 10
-");
-$stmt->execute([$user['id']]);
-$recentPastes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-    <style>
-        .recent-list {
-    max-height: 400px;
-    overflow-y: auto;
-}
-    </style>
 <head>
     <meta charset="UTF-8">
-    <title>Recent Pastes | MyPastebin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"  rel="stylesheet">
-    <link rel="stylesheet" href="src/recent.css">
+    <title>Recent Pastes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="src/navbar.css">
+    <link rel="stylesheet" href="src/view.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+        .paste-card {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            background-color: white;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+            transition: transform 0.2s, box-shadow 0.2s;
+            height: 100%;
+        }
+        .paste-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+        }
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .status-ind {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #0d6efd;
+            margin-top: 5px;
+            flex-shrink: 0;
+        }
+        .text-content {
+            margin: 0;
+            line-height: 1.6;
+            word-break: break-word;
+        }
+        .text-link {
+            text-decoration: none;
+            font-weight: 500;
+            color: #0d6efd;
+        }
+        .text-link:hover {
+            text-decoration: underline;
+        }
+        .time {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+        .button-wrap {
+            margin-top: auto;
+            padding-top: 1rem;
+        }
+        .primary-cta {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            background-color: #0d6efd;
+            color: white;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+        .primary-cta:hover {
+            background-color: #0b5ed7;
+            color: white;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+            background-color: #fff;
+            border-radius: .5rem;
+        }
+    </style>
 </head>
+<?php include 'navbar.php'; ?>
 <body>
-    <?php include 'navbar.php'; ?>
+    <div class="container py-4">
+        <h2 class="page-title">Recent Pastes</h2>
 
-    <div class="container py-5">
-        <h2 class="mb-4">Recent Pastes</h2>
-        
-        <?php if (empty($recentPastes)): ?>
-            <div class="alert alert-info text-center">
-                No recent pastes found.
-            </div>
-        <?php else: ?>
-            <div class="list-group">
-                <?php foreach ($recentPastes as $paste): ?>
-                    <a href="view.php?id=<?= $paste['id'] ?>" class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                            <div class="fw-bold"><?= htmlspecialchars($paste['title']) ?></div>
-                            <small>By: <?= htmlspecialchars($paste['author'] ?: 'Anonymous') ?></small>
+        <div class="row">
+            <?php
+            $stmt = $pdo->query("
+                SELECT p.id, p.title, p.username, p.created_at, u.username AS registered_username, p.user_id
+                FROM pastes p
+                LEFT JOIN users u ON p.user_id = u.id
+                ORDER BY p.created_at DESC
+                LIMIT 15
+            ");
+
+            if ($stmt->rowCount() === 0): ?>
+                <div class="col-12">
+                    <div class="empty-state">
+                        <h3>No pastes yet</h3>
+                        <p>Be the first to create a paste!</p>
+                        <a href="manage_paste.php?action=create" class="primary-cta mt-2">Create New Paste</a>
+                    </div>
+                </div>
+            <?php else:
+                while ($row = $stmt->fetch()):
+                    $pasteId    = intval($row['id']);
+                    $pasteTitle = htmlspecialchars($row['title']);
+                    $pasteUser  = $row['user_id'] ? htmlspecialchars($row['registered_username']) : htmlspecialchars($row['username'] ?? 'Anonymous');
+                    $createdAt  = $row['created_at'];
+            ?>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="paste-card">
+                        <div>
+                            <div class="card-header">
+                                <div class="status-ind"></div>
+                                <div class="text-wrap">
+                                    <p class="text-content">
+                                        <a class="text-link" href="#">
+                                            <?= $pasteUser ?>
+                                        </a>
+                                        posted
+                                        <a class="text-link" href="view.php?id=<?= $pasteId ?>">
+                                            <?= $pasteTitle ?>
+                                        </a>
+                                    </p>
+                                    <p class="time"><?= date('M j, Y, g:i a', strtotime($createdAt)) ?></p>
+                                </div>
+                            </div>
                         </div>
-                        <span class="badge bg-primary rounded-pill">
-                            <?= date('M j, Y', strtotime($paste['created_at'])) ?>
-                        </span>
-                    </a>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
+                        <div class="button-wrap">
+                            <a href="view.php?id=<?= $pasteId ?>" class="primary-cta">View Paste</a>
+                            <?php if ($user && isset($row['user_id']) && $user['id'] === $row['user_id']): ?>
+                                <a href="manage_paste.php?action=edit&id=<?= $pasteId ?>" class="primary-cta" style="background-color: #6c757d; margin-left: 0.5rem;">Edit</a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            <?php
+                endwhile;
+            endif;
+            ?>
+        </div>
     </div>
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
