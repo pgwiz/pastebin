@@ -37,7 +37,7 @@ $user = get_logged_in_user();
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link star-button" href="create.php">
+                        <a class="nav-link star-button" href="manage_paste.php?action=create">
                             <i class="fas fa-plus-circle me-2"></i>New Paste
                             <div class="star-1"><?php include __DIR__ . '/src/star-1.svg'; ?></div>
                             <div class="star-2"><?php include __DIR__ . '/src/star-2.svg'; ?></div>
