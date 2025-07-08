@@ -27,6 +27,7 @@ $pastes = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <title>Paste History | MyPastebin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"  rel="stylesheet">
     <link rel="stylesheet" href="src/history.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
     <?php include 'navbar.php'; ?>
@@ -45,6 +46,9 @@ $pastes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <th>Title</th>
                         <th>Author</th>
                         <th>Date</th>
+                        <?php if (!empty($user['is_admin'])): ?>
+                            <th>Status</th>
+                        <?php endif; ?>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -54,16 +58,40 @@ $pastes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <td><?= htmlspecialchars($paste['title']) ?></td>
                             <td><?= htmlspecialchars($paste['author'] ?: 'Anonymous') ?></td>
                             <td><?= date('M j, Y', strtotime($paste['created_at'])) ?></td>
+                            <?php if (!empty($user['is_admin'])): ?>
+                                <td>
+                                    <?php if ($paste['is_featured']): ?>
+                                        <span class="badge bg-success">Featured</span>
+                                    <?php else: ?>
+                                        <span class="badge bg-secondary">Standard</span>
+                                    <?php endif; ?>
+                                </td>
+                            <?php endif; ?>
                             <td>
                                 <a href="view.php?id=<?= $paste['id'] ?>" class="btn btn-sm btn-outline-primary">
                                     <i class="fas fa-eye"></i> View
                                 </a>
-                                <a href="edit.php?id=<?= $paste['id'] ?>" class="btn btn-sm btn-outline-warning">
+                                <a href="manage_paste.php?action=edit&id=<?= $paste['id'] ?>" class="btn btn-sm btn-outline-warning">
                                     <i class="fas fa-edit"></i> Edit
                                 </a>
-                                <a href="delete.php?id=<?= $paste['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?')">
+                                <a href="manage_paste.php?action=delete&id=<?= $paste['id'] ?>" class="btn btn-sm btn-outline-danger">
                                     <i class="fas fa-trash"></i> Delete
                                 </a>
+                                <?php if (!empty($user['is_admin'])): ?>
+                                    <form action="feature.php" method="post" class="d-inline">
+                                        <input type="hidden" name="paste_id" value="<?= $paste['id'] ?>">
+                                        <?php if ($paste['is_featured']): ?>
+                                            <button type="submit" class="btn btn-sm btn-outline-secondary" title="Unfeature Paste">
+                                                <i class="fas fa-star-half-alt"></i>
+                                            </button>
+                                        <?php else: ?>
+                                            <input type="hidden" name="is_featured" value="1">
+                                            <button type="submit" class="btn btn-sm btn-outline-success" title="Feature Paste">
+                                                <i class="fas fa-star"></i>
+                                            </button>
+                                        <?php endif; ?>
+                                    </form>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
