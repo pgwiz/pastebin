@@ -6,5 +6,6 @@ ptg2.ps1
 port/
 old/
 migrate_users.php
+migrate_permissions.php
 .gitignore
 README.md
