@@ -41,7 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         
-        $stmt = $pdo->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
+        // Insert new user with is_superadmin set to 0
+        $stmt = $pdo->prepare("INSERT INTO users (username, email, password, is_superadmin) VALUES (?, ?, ?, 0)");
         if ($stmt->execute([$username, $email, $hashedPassword])) {
             // Redirect to login page after successful registration
             header("Location: login.php?registration=success");
