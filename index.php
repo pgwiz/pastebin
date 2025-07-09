@@ -1,7 +1,16 @@
 <?php
+$cspHeader = "Content-Security-Policy: default-src 'self'; ".
+             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; ".
+             "script-src 'self' https://cdn.jsdelivr.net; ".
+             "img-src 'self' https://images.unsplash.com data:; ".
+             "font-src https://cdnjs.cloudflare.com;";
+
+header($cspHeader);
+
 include 'db.php';
 include 'auth.php';
 include 'card_view.php'; // Include the new card component file
+
 
 $user = get_logged_in_user();
 ?>
