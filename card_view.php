@@ -1,7 +1,11 @@
 <?php
 
+// Include the sanitizer if you have it, otherwise this will gracefully fallback
+@include_once 'sanitizer.php';
+
 /**
- * Renders the CSS styles required for the cards and hover effect.
+ * Renders the CSS styles required for the cards, hover effect, and toast notification.
+ * Call this function once inside the <head> tag of your HTML page.
  */
 function renderCardStyles() {
     echo "
@@ -29,7 +33,7 @@ function renderCardStyles() {
         .hover-window{position:absolute;top:0;left:0;width:100%;height:100%;background-color:rgba(255,255,255,0.95);backdrop-filter:blur(4px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .4s ease-in-out,visibility .4s ease-in-out;overflow-y:auto;z-index:10;padding:1.5rem;border-radius:1.5rem;}
         .card-container:hover .hover-window{opacity:1;visibility:visible;pointer-events:auto;transition-delay:1.5s;}
         .hover-window h3{font-weight:700;font-size:1.125rem;margin:0 0 0.5rem 0;color:#2d3748;}
-        .hover-window pre{white-space: pre-wrap; word-wrap: break-word; background-color: #f1f1f1; padding: 1rem; border-radius: 0.5rem; color: #333; font-size: 0.875rem;}
+        .hover-window .purified-content, .hover-window pre {white-space: pre-wrap; word-wrap: break-word; background-color: #f1f1f1; padding: 1rem; border-radius: 0.5rem; color: #333; font-size: 0.875rem;}
     </style>";
 }
 
@@ -41,7 +45,13 @@ function renderCardStyles() {
  */
 function renderCard($postData, $user = null) {
     $formattedDate = date("M j, Y, g:i a", strtotime($postData['created_at']));
-    $snippet = strlen($postData['content']) > 100 ? substr(strip_tags($postData['content']), 0, 100) . '...' : htmlspecialchars($postData['content']);
+    $snippet = htmlspecialchars(substr(strip_tags($postData['content']), 0, 100));
+    if (strlen(strip_tags($postData['content'])) > 100) {
+        $snippet .= '...';
+    }
+
+    // Use the advanced sanitizer if it exists, otherwise fall back to htmlspecialchars
+    $sanitized_content = function_exists('sanitize_html') ? sanitize_html($postData['content']) : htmlspecialchars($postData['content']);
 
     $cardHtml = '
     <div class="card-container">
@@ -73,13 +83,14 @@ function renderCard($postData, $user = null) {
                 </div>
             </div>
         </div>
-        
-        <!-- Hover-over window with full content -->
+
+        <!-- Hover-over window with full, sanitized content -->
         <div class="hover-window">
             <h3>' . htmlspecialchars($postData['category']) . '</h3>
-            <pre>' . htmlspecialchars($postData['content']) . '</pre>
+            <div class="purified-content">' . $sanitized_content . '</div>
         </div>
-    </div>';  
+    </div>';
+
     return $cardHtml;
 }
 
