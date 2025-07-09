@@ -64,7 +64,7 @@ function renderCard($postData, $user = null) {
     $cardHtml = '
     <div class="card-container">
         <!-- The copy function needs the raw text, so we escape it for the textarea value -->
-        <textarea id="paste-content-card-'. $id .'" style="position: absolute; left: -9999px; top: 0; opacity: 0;">'. htmlspecialchars($content) .'</textarea>
+        <textarea id="paste-content-card-'. $id .'" style="...">' . htmlspecialchars($content) . '</textarea>
         
         <div class="card-content">
             <div class="inner-content-wrapper">
@@ -83,7 +83,8 @@ function renderCard($postData, $user = null) {
     }
 
     $cardHtml .= '
-                    <button class="btn btn-copy" onclick="copyPasteCard(\'paste-content-card-'. $id .'\')">Copy</button>
+   
+<button class="btn btn-copy" onclick="copyRawContent('. $id .')">Copy</button>
                 </div>
                 <div class="card-footer">
                     <span class="date-text">' . $formattedDate . '</span>
@@ -111,24 +112,40 @@ function renderCardScripts() {
     <div id="copy-toast" style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background-color: #28a745; color: #fff; padding: 12px 25px; border-radius: 8px; z-index: 1050; opacity: 0; visibility: hidden; transition: all 0.5s;">Copied to clipboard!</div>
 
     <script>
-    function copyPasteCard(textareaId) {
-        const contentTextarea = document.getElementById(textareaId);
-        
-        navigator.clipboard.writeText(contentTextarea.value).then(() => {
-            const toast = document.getElementById("copy-toast");
-            toast.style.opacity = 1;
-            toast.style.visibility = "visible";
-            toast.style.bottom = "50px";
+    function copyRawContent(pasteId) {
+    const toast = document.getElementById("copy-toast");
 
-            setTimeout(() => {
-                toast.style.opacity = 0;
-                toast.style.visibility = "hidden";
-                toast.style.bottom = "30px";
-            }, 2000);
-        }).catch(err => {
-            console.error("Failed to copy: ", err);
+
+    fetch(`get_raw_paste.php?id=${pasteId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text(); // Get the response body as plain text
+        })
+        .then(rawContent => {
+            // Use the Clipboard API to write the fetched text
+            navigator.clipboard.writeText(rawContent).then(() => {
+                // Show success toast
+                toast.style.opacity = 1;
+                toast.style.visibility = "visible";
+                toast.style.bottom = "50px";
+
+                setTimeout(() => {
+                    toast.style.opacity = 0;
+                    toast.style.visibility = "hidden";
+                    toast.style.bottom = "30px";
+                }, 2000);
+            }).catch(err => {
+                console.error("Failed to copy to clipboard: ", err);
+                alert("Failed to copy. See console for details.");
+            });
+        })
+        .catch(err => {
+            console.error("Failed to fetch raw content: ", err);
+            alert("Could not retrieve paste content.");
         });
-    }
+}
     </script>';
 }
 
