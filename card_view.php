@@ -73,14 +73,13 @@ function renderCard($postData, $user = null) {
                 </div>
             </div>
         </div>
-
+        
         <!-- Hover-over window with full content -->
         <div class="hover-window">
             <h3>' . htmlspecialchars($postData['category']) . '</h3>
             <pre>' . htmlspecialchars($postData['content']) . '</pre>
         </div>
-    </div>';
-
+    </div>';  
     return $cardHtml;
 }
 
