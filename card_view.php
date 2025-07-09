@@ -44,50 +44,58 @@ function renderCardStyles() {
  * @return string The HTML for the card.
  */
 function renderCard($postData, $user = null) {
-    $formattedDate = date("M j, Y, g:i a", strtotime($postData['created_at']));
-    $snippet = htmlspecialchars(substr(strip_tags($postData['content']), 0, 100));
-    if (strlen(strip_tags($postData['content'])) > 100) {
+    // Sanitize all data points before using them.
+    $id = htmlspecialchars($postData['id']);
+    $category = htmlspecialchars($postData['category']);
+    $content = $postData['content']; // This will be sanitized differently below
+    $author = htmlspecialchars($postData['author']);
+    $userId = isset($postData['user_id']) ? htmlspecialchars($postData['user_id']) : null;
+    $formattedDate = htmlspecialchars(date("M j, Y, g:i a", strtotime($postData['created_at'])));
+
+    // Create a safe snippet for display.
+    $snippet = htmlspecialchars(substr(strip_tags($content), 0, 100));
+    if (strlen(strip_tags($content)) > 100) {
         $snippet .= '...';
     }
 
-    // Use the advanced sanitizer if it exists, otherwise fall back to htmlspecialchars
-    $sanitized_content = function_exists('sanitize_html') ? sanitize_html($postData['content']) : htmlspecialchars($postData['content']);
+    // Use the advanced sanitizer for the hover content, or fall back to the basic one.
+    $sanitized_hover_content = function_exists('sanitize_html') ? sanitize_html($content) : htmlspecialchars($content);
 
     $cardHtml = '
     <div class="card-container">
-        <!-- Hidden textarea for the copy function -->
-        <textarea id="paste-content-card-'. $postData['id'] .'" style="position: absolute; left: -9999px; top: 0; opacity: 0;">'. htmlspecialchars($postData['content']) .'</textarea>
+        <!-- The copy function needs the raw text, so we escape it for the textarea value -->
+        <textarea id="paste-content-card-'. $id .'" style="position: absolute; left: -9999px; top: 0; opacity: 0;">'. htmlspecialchars($content) .'</textarea>
         
         <div class="card-content">
             <div class="inner-content-wrapper">
                 <div class="card-header">
-                    <span class="expo-text">' . htmlspecialchars($postData['category']) . '</span>
+                    <span class="expo-text">' . $category . '</span>
                 </div>
                 <div class="card-body">
                     <p>' . $snippet . '</p>
                 </div>
                 <div class="card-buttons">
-                    <a href="view.php?id='. $postData['id'] .'" class="btn btn-view">View</a>';
+                    <a href="view.php?id='. $id .'" class="btn btn-view">View</a>';
 
     // Conditionally show the Edit button based on ownership or admin status
-    if ($user && ((isset($postData['user_id']) && $user['id'] === $postData['user_id']) || !empty($user['is_superadmin']))) {
-        $cardHtml .= '<a href="manage_paste.php?action=edit&id='. $postData['id'] .'" class="btn btn-edit">Edit</a>';
+    if ($user && (($userId && $user['id'] === $userId) || !empty($user['is_superadmin']))) {
+        $cardHtml .= '<a href="manage_paste.php?action=edit&id='. $id .'" class="btn btn-edit">Edit</a>';
     }
 
     $cardHtml .= '
-                    <button class="btn btn-copy" onclick="copyPasteCard(\'paste-content-card-'. $postData['id'] .'\')">Copy</button>
+                    <button class="btn btn-copy" onclick="copyPasteCard(\'paste-content-card-'. $id .'\')">Copy</button>
                 </div>
                 <div class="card-footer">
-                    <span class="date-text">' . htmlspecialchars($formattedDate) . '</span>
-                    <span class="user-text">' . htmlspecialchars($postData['author']) . '</span>
+                    <span class="date-text">' . $formattedDate . '</span>
+                    <span class="user-text">' . $author . '</span>
                 </div>
             </div>
         </div>
 
         <!-- Hover-over window with full, sanitized content -->
         <div class="hover-window">
-            <h3>' . htmlspecialchars($postData['category']) . '</h3>
-            <div class="purified-content">' . $sanitized_content . '</div>
+            <h3>' . $category . '</h3>
+            <div class="purified-content">' . $sanitized_hover_content . '</div>
         </div>
     </div>';
 
