@@ -64,7 +64,7 @@ function renderCard($postData, $user = null) {
     $cardHtml = '
     <div class="card-container">
         <!-- The copy function needs the raw text, so we escape it for the textarea value -->
-        <textarea id="paste-content-card-'. $id .'" style="...">' . htmlspecialchars($content) . '</textarea>
+        <textarea hidden id="paste-content-card-'. $id .'" style="...">' . htmlspecialchars($content) . '</textarea>
         
         <div class="card-content">
             <div class="inner-content-wrapper">
