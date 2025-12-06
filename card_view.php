@@ -1,129 +1,117 @@
 <?php
+include_once 'sanitizer.php';
 
-// Include the sanitizer if you have it, otherwise this will gracefully fallback
-@include_once 'sanitizer.php';
-
-/**
- * Renders the CSS styles required for the cards, hover effect, and toast notification.
- * Call this function once inside the <head> tag of your HTML page.
- */
 function renderCardStyles() {
-    echo "<style>body{background-color:#f7fafc;font-family:'Inter',sans-serif;margin:0;box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}.page-container{display:flex;flex-direction:column;align-items:stretch;padding:2rem}.card-grid{display:grid;grid-template-columns:1fr;gap:2rem;width:100%}
-@media(min-width:768px){.card-grid{grid-template-columns:repeat(2,1fr)}}
-@media(min-width:992px){.card-grid{grid-template-columns:repeat(3,1fr)}}
-@media(min-width:1400px){.card-grid{grid-template-columns:repeat(4,1fr)}}.card-container{position:relative;width:100%;max-width:100%;margin-bottom:0}.card-content{background-color:#fff;padding:1.5rem;border-radius:1.5rem;border:4px solid #9ae6b4;box-shadow:0 10px 15px-3px rgba(0,0,0,0.1),0 4px 6px-2px rgba(0,0,0,0.05);position:relative;z-index:1;overflow:hidden;height:100%}.card-content::before{content:'';position:absolute;left:0;top:0;width:50px;height:100%;background-color:#f0a981;clip-path:ellipse(45%40%at 0%50%);z-index:0}.card-content::after{content:'';position:absolute;right:0;top:0;width:50px;height:100%;background-color:#d8e1d9;clip-path:ellipse(45%40%at 100%50%);z-index:0}.inner-content-wrapper{position:relative;z-index:1;height:100%;display:flex;flex-direction:column}.card-header,.card-footer{display:flex;justify-content:space-between;align-items:center}.card-header{margin-bottom:1rem}.card-body{flex-grow:1}.card-body p{color:#718096;margin:0 0 1.5rem 0;line-height:1.5}.card-buttons{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.5rem}.expo-text{color:#4299e1;font-weight:600}.date-text,.user-text{font-size:0.875rem}.date-text{color:#a0aec0}.user-text{color:#4299e1;font-weight:500}.btn{flex:1 1 0%;padding:0.5rem 1rem;border-radius:0.5rem;border:none;box-shadow:0 1px 3px 0 rgba(0,0,0,0.1),0 1px 2px 0 rgba(0,0,0,0.06);transition:background-color 0.2s;cursor:pointer;font-family:inherit;font-size:100%;text-align:center;text-decoration:none;display:inline-block}.btn-view{background-color:#e2e8f0;color:#2d3748}.btn-view:hover{background-color:#cbd5e0}.btn-edit{background-color:#000;color:#fff}.btn-edit:hover{background-color:#2d3748}.btn-copy{background-color:#f6ad55;color:#fff}.btn-copy:hover{background-color:#ed8936}.hover-window{position:absolute;top:0;left:0;width:100%;height:100%;background-color:rgba(255,255,255,0.95);backdrop-filter:blur(4px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity.4s ease-in-out,visibility.4s ease-in-out;overflow-y:auto;z-index:10;padding:1.5rem;border-radius:1.5rem}.card-container:hover.hover-window{opacity:1;visibility:visible;pointer-events:auto;transition-delay:1.5s}.hover-window h3{font-weight:700;font-size:1.125rem;margin:0 0 0.5rem 0;color:#2d3748}.hover-window.purified-content,.hover-window pre{white-space:pre-wrap;word-wrap:break-word;background-color:#f1f1f1;padding:1rem;border-radius:0.5rem;color:#333;font-size:0.875rem}</style>";
+    // Styles handled by Tailwind/Global CSS now. Function kept for compatibility to avoid breaking calls in other files if any.
 }
 
-/**
- * Renders the HTML for a single card with functional buttons and hover content.
- * @param array $postData Associative array containing post data.
- * @param array|null $user The currently logged-in user array, or null if guest.
- * @return string The HTML for the card.
- */
 function renderCard($postData, $user = null) {
-    // Sanitize all data points before using them.
+    // Sanitize
     $id = htmlspecialchars($postData['id']);
     $category = htmlspecialchars($postData['category']);
-    $content = $postData['content']; // This will be sanitized differently below
+    $content = $postData['content'];
     $author = htmlspecialchars($postData['author']);
     $userId = isset($postData['user_id']) ? htmlspecialchars($postData['user_id']) : null;
-    $formattedDate = htmlspecialchars(date("M j, Y, g:i a", strtotime($postData['created_at'])));
+    $created_at = strtotime($postData['created_at']);
+    $formattedDate = htmlspecialchars(date("M j, Y, g:i a", $created_at));
 
-    // Create a safe snippet for display.
     $snippet = htmlspecialchars(substr(strip_tags($content), 0, 100));
-    if (strlen(strip_tags($content)) > 100) {
-        $snippet .= '...';
-    }
+    if (strlen(strip_tags($content)) > 100) $snippet .= '...';
 
-    // Use the advanced sanitizer for the hover content, or fall back to the basic one.
+    // Hover content
     $sanitized_hover_content = function_exists('sanitize_html') ? sanitize_html($content) : htmlspecialchars($content);
 
     $cardHtml = '
-    <div class="card-container">
-        <!-- The copy function needs the raw text, so we escape it for the textarea value -->
-        <textarea hidden id="paste-content-card-'. $id .'" style="...">' . htmlspecialchars($content) . '</textarea>
+    <div class="relative w-full h-full group perspective-1000">
+        <textarea hidden id="paste-content-card-'. $id .'">' . htmlspecialchars($content) . '</textarea>
         
-        <div class="card-content">
-            <div class="inner-content-wrapper">
-                <div class="card-header">
-                    <span class="expo-text">' . $category . '</span>
-                </div>
-                <div class="card-body">
-                    <p>' . $snippet . '</p>
-                </div>
-                <div class="card-buttons">
-                    <a href="view.php?id='. $id .'" class="btn btn-view">View</a>';
+        <!-- Card Body -->
+        <div class="glass-panel rounded-2xl p-6 h-full flex flex-col relative overflow-hidden transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(56,189,248,0.3)] group-hover:-translate-y-1">
+            
+            <!-- Decor shapes -->
+            <div class="absolute -top-10 -left-10 w-20 h-20 bg-blue-500/20 rounded-full blur-xl"></div>
+            <div class="absolute -bottom-10 -right-10 w-20 h-20 bg-purple-500/20 rounded-full blur-xl"></div>
+            
+            <!-- Custom SVG Pattern -->
+            <div class="absolute inset-0 opacity-10 pointer-events-none z-0">
+                <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <pattern id="grid-pattern-'. $id .'" width="40" height="40" patternUnits="userSpaceOnUse">
+                            <path d="M0 40L40 0H20L0 20M40 40V20L20 40" stroke="white" stroke-width="2" fill="none"/>
+                        </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#grid-pattern-'. $id .')" />
+                </svg>
+            </div>';
 
-    // Conditionally show the Edit button based on ownership or admin status
-    if ($user && (($userId && $user['id'] === $userId) || !empty($user['is_superadmin']))) {
-        $cardHtml .= '<a href="manage_paste.php?action=edit&id='. $id .'" class="btn btn-edit">Edit</a>';
+    // Admin Info Button
+    if (isset($user['is_superadmin']) && $user['is_superadmin']) {
+        $cardHtml .= '
+            <button onclick="openAdminSummary('. $id .'); event.preventDefault();" 
+                    class="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-slate-800/50 text-slate-400 hover:bg-blue-500 hover:text-white transition-all backdrop-blur-sm border border-slate-700/50 translate-y-0"
+                    title="Admin Summary">
+                <i class="fas fa-info"></i>
+            </button>';
     }
 
     $cardHtml .= '
-   
-<button class="btn btn-copy" onclick="copyRawContent('. $id .')">Copy</button>
+            <div class="relative z-10 flex flex-col h-full">
+                <!-- Header -->
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-bold text-sky-400 truncate w-full" title="'. $category .'">'. $category .'</h3>
                 </div>
-                <div class="card-footer">
-                    <span class="date-text">' . $formattedDate . '</span>
-                    <span class="user-text">' . $author . '</span>
+
+                <!-- Content Snippet -->
+                <div class="mb-6 flex-grow">
+                    <p class="text-slate-300 text-sm leading-relaxed line-clamp-3">'. $snippet .'</p>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex gap-2 mb-4">
+                    <a href="view.php?id='. $id .'" class="flex-1 text-center px-3 py-2 bg-slate-700/50 hover:bg-slate-700 text-white rounded-lg text-sm font-medium transition-colors border border-slate-600/50">View</a>';
+
+    if ($user && (($userId && $user['id'] === $userId) || !empty($user['is_superadmin']))) {
+        $cardHtml .= '<a href="manage_paste.php?action=edit&id='. $id .'" class="flex-1 text-center px-3 py-2 bg-blue-600/20 hover:bg-blue-600/40 text-blue-300 border border-blue-500/30 rounded-lg text-sm font-medium transition-colors">Edit</a>';
+    }
+
+    $cardHtml .= '
+                    <button onclick="copyRawContent('. $id .')" class="flex-1 px-3 py-2 bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-300 border border-emerald-500/30 rounded-lg text-sm font-medium transition-colors">Copy</button>
+                </div>
+
+                <!-- Footer -->
+                <div class="flex justify-between items-center text-xs text-slate-500 border-t border-slate-700/50 pt-3 mt-auto">
+                    <span>'. $formattedDate .'</span>
+                    <span class="text-sky-300/80 font-medium">@'. $author .'</span>
                 </div>
             </div>
-        </div>
-
-        <!-- Hover-over window with full, sanitized content -->
-        <div class="hover-window">
-            <h3>' . $category . '</h3>
-            <div class="purified-content">' . $sanitized_hover_content . '</div>
         </div>
     </div>';
 
     return $cardHtml;
 }
 
-/**
- * Renders the JavaScript required for card functionality (e.g., copy button).
- */
 function renderCardScripts() {
     echo '
-    <!-- Toast element for copy feedback -->
-    <div id="copy-toast" style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background-color: #28a745; color: #fff; padding: 12px 25px; border-radius: 8px; z-index: 1050; opacity: 0; visibility: hidden; transition: all 0.5s;">Copied to clipboard!</div>
+    <div id="copy-toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-6 py-3 rounded-xl shadow-lg transform transition-all duration-300 opacity-0 invisible z-50 flex items-center space-x-2">
+        <i class="fas fa-check-circle"></i>
+        <span>Copied to clipboard!</span>
+    </div>
 
     <script>
     function copyRawContent(pasteId) {
-    const toast = document.getElementById("copy-toast");
-
-
-    fetch(`get_raw_paste.php?id=${pasteId}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.text(); // Get the response body as plain text
-        })
-        .then(rawContent => {
-            // Use the Clipboard API to write the fetched text
-            navigator.clipboard.writeText(rawContent).then(() => {
-                // Show success toast
-                toast.style.opacity = 1;
-                toast.style.visibility = "visible";
-                toast.style.bottom = "50px";
-
-                setTimeout(() => {
-                    toast.style.opacity = 0;
-                    toast.style.visibility = "hidden";
-                    toast.style.bottom = "30px";
-                }, 2000);
-            }).catch(err => {
-                console.error("Failed to copy to clipboard: ", err);
-                alert("Failed to copy. See console for details.");
-            });
-        })
-        .catch(err => {
-            console.error("Failed to fetch raw content: ", err);
-            alert("Could not retrieve paste content.");
-        });
-}
+        const toast = document.getElementById("copy-toast");
+        fetch(`get_raw_paste.php?id=${pasteId}`)
+            .then(res => res.text())
+            .then(text => {
+                navigator.clipboard.writeText(text).then(() => {
+                    toast.classList.remove("opacity-0", "invisible", "translate-y-4");
+                    setTimeout(() => {
+                        toast.classList.add("opacity-0", "invisible", "translate-y-4");
+                    }, 2000);
+                });
+            })
+            .catch(console.error);
+    }
     </script>';
 }
-
 ?>
