@@ -7,7 +7,5 @@ port/
 old/
 migrate_users.php
 migrate_permissions.php
-.gitignore
-README.md
 cardtest/
 m1396_pastebin.sql
